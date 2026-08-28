@@ -1,0 +1,121 @@
+.bb-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  width: 260px;
+  min-height: 100vh;
+
+  padding: var(--bb-space-5);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(172, 71, 250, 0.08),
+      transparent 30%
+    ),
+    var(--bb-color-background);
+
+  border-right: 1px solid var(--bb-color-border);
+
+  font-family: var(--bb-font-family);
+
+  box-sizing: border-box;
+}
+
+.bb-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-space-3);
+
+  margin-bottom: var(--bb-space-6);
+}
+
+.bb-sidebar__brand-mark {
+  display: grid;
+  place-items: center;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: var(--bb-radius-md);
+
+  background: linear-gradient(
+    135deg,
+    var(--bb-color-primary),
+    var(--bb-color-primary-dark)
+  );
+
+  color: var(--bb-color-text-primary);
+  font-size: 22px;
+  font-weight: 800;
+
+  box-shadow: 0 10px 30px rgba(172, 71, 250, 0.25);
+}
+
+.bb-sidebar__brand-name,
+.bb-sidebar__brand-subtitle {
+  display: block;
+}
+
+.bb-sidebar__brand-name {
+  color: var(--bb-color-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bb-sidebar__brand-subtitle {
+  margin-top: 2px;
+
+  color: var(--bb-color-text-secondary);
+  font-size: 12px;
+}
+
+.bb-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-space-2);
+}
+
+.bb-sidebar__link {
+  display: flex;
+  align-items: center;
+
+  min-height: 46px;
+
+  padding: 0 var(--bb-space-4);
+
+  border-radius: var(--bb-radius-md);
+
+  color: var(--bb-color-text-secondary);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.bb-sidebar__link:hover {
+  background: var(--bb-color-surface-hover);
+  color: var(--bb-color-text-primary);
+}
+
+.bb-sidebar__link:focus-visible {
+  outline: 2px solid var(--bb-color-primary);
+  outline-offset: 2px;
+}
+
+.bb-sidebar__link--active {
+  background: linear-gradient(
+    90deg,
+    rgba(172, 71, 250, 0.18),
+    rgba(172, 71, 250, 0.06)
+  );
+
+  color: var(--bb-color-text-primary);
+
+  box-shadow: inset 3px 0 0 var(--bb-color-primary);
+}

@@ -1,24 +1,8 @@
-export default function Root(props) {
-  const basePath = "/bytebank-orchestrator";
+import "./styles/tokens.css";
+import "./components/sidebar/sidebar.css";
 
-  function onClick() {
-    const event = new CustomEvent("onNavClick");
-    document.dispatchEvent(event);
-  }
+import Sidebar from "./components/sidebar/Sidebar";
 
-  return (
-    <section>
-      <nav>
-        <a href={`${basePath}/`}>Início</a>{" "}
-        <a href={`${basePath}/account`}>Conta</a>{" "}
-        <a href={`${basePath}/transaction`}>Transações</a>{" "}
-        <a href={`${basePath}/cards`}>Cartões</a>
-      </nav>
-
-      <div>
-        {props.name} is mounted!
-        <button onClick={onClick}>Broadcast do evento do navbar</button>
-      </div>
-    </section>
-  );
+export default function Root() {
+  return <Sidebar />;
 }
