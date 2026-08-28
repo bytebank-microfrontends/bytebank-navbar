@@ -1,8 +1,5 @@
 export default function Root(props) {
-  const isProduction =
-    window.location.hostname === "bytebank-microfrontends.github.io";
-
-  const basePath = isProduction ? "/bytebank-orchestrator" : "";
+  const basePath = "/bytebank-orchestrator";
 
   function onClick() {
     const event = new CustomEvent("onNavClick");
