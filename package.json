@@ -43,6 +43,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "lucide-react": "^1.37.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "single-spa-react": "^6.0.2"
