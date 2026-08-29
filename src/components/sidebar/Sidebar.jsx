@@ -1,9 +1,4 @@
-import {
-  CreditCard,
-  Home,
-  Landmark,
-  ReceiptText,
-} from "lucide-react";
+import { CreditCard, Home, Landmark, ReceiptText } from "lucide-react";
 
 const navigationItems = [
   {
@@ -39,20 +34,13 @@ export default function Sidebar() {
         </div>
 
         <div className="bb-sidebar__brand-content">
-          <strong className="bb-sidebar__brand-name">
-            ByteBank
-          </strong>
+          <strong className="bb-sidebar__brand-name">ByteBank</strong>
 
-          <span className="bb-sidebar__brand-subtitle">
-            Digital Banking
-          </span>
+          <span className="bb-sidebar__brand-subtitle">Digital Banking</span>
         </div>
       </div>
 
-      <nav
-        className="bb-sidebar__nav"
-        aria-label="Navegação principal"
-      >
+      <nav className="bb-sidebar__nav" aria-label="Navegação principal">
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPath === item.href;

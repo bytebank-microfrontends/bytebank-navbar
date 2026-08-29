@@ -1,3 +1,84 @@
+.bb-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  width: 260px;
+  min-height: 100vh;
+
+  padding: 24px;
+
+  background: var(--bb-color-sidebar, #17121f);
+
+  border-right: 1px solid var(--bb-color-border, #e8e3ec);
+
+  font-family:
+    var(
+      --bb-font-family,
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
+
+  box-sizing: border-box;
+}
+
+.bb-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 32px;
+}
+
+.bb-sidebar__brand-mark {
+  display: grid;
+  place-items: center;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    var(--bb-color-primary, #a43df2),
+    var(--bb-color-primary-dark, #6420bf)
+  );
+
+  color: var(--bb-color-sidebar-text, #f9f7fb);
+
+  font-size: 22px;
+  font-weight: 800;
+
+  box-shadow: 0 10px 30px rgba(164, 61, 242, 0.2);
+}
+
+.bb-sidebar__brand-content {
+  min-width: 0;
+}
+
+.bb-sidebar__brand-name,
+.bb-sidebar__brand-subtitle {
+  display: block;
+}
+
+.bb-sidebar__brand-name {
+  color: var(--bb-color-sidebar-text, #f9f7fb);
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bb-sidebar__brand-subtitle {
+  margin-top: 2px;
+
+  color: var(--bb-color-sidebar-muted, #b4aabd);
+
+  font-size: 12px;
+}
+
 .bb-sidebar__nav {
   display: flex;
   flex-direction: column;
@@ -9,15 +90,16 @@
 
   display: flex;
   align-items: center;
-  gap: var(--bb-space-3);
+  gap: 12px;
 
   min-height: 52px;
 
-  padding: 0 var(--bb-space-4);
+  padding: 0 16px;
 
-  border-radius: var(--bb-radius-md);
+  border-radius: 14px;
 
-  color: var(--bb-color-sidebar-muted);
+  color: var(--bb-color-sidebar-muted, #b4aabd);
+
   text-decoration: none;
 
   font-size: 14px;
@@ -38,8 +120,8 @@
 }
 
 .bb-sidebar__link:hover {
-  background: var(--bb-color-sidebar-surface);
-  color: var(--bb-color-sidebar-text);
+  background: var(--bb-color-sidebar-surface, #241a32);
+  color: var(--bb-color-sidebar-text, #f9f7fb);
 }
 
 .bb-sidebar__link:hover .bb-sidebar__link-icon {
@@ -47,19 +129,19 @@
 }
 
 .bb-sidebar__link--active {
-  background: var(--bb-color-sidebar-surface);
-  color: var(--bb-color-sidebar-text);
+  background: var(--bb-color-sidebar-surface, #241a32);
+  color: var(--bb-color-sidebar-text, #f9f7fb);
 
   box-shadow:
-    inset 3px 0 0 var(--bb-color-primary),
+    inset 3px 0 0 var(--bb-color-primary, #a43df2),
     0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .bb-sidebar__link--active .bb-sidebar__link-icon {
-  color: var(--bb-color-primary);
+  color: var(--bb-color-primary, #a43df2);
 }
 
 .bb-sidebar__link:focus-visible {
-  outline: 2px solid var(--bb-color-primary);
+  outline: 2px solid var(--bb-color-primary, #a43df2);
   outline-offset: 2px;
 }
