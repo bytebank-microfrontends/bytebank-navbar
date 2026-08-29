@@ -1,4 +1,3 @@
-import "./styles/tokens.css";
 import "./components/sidebar/sidebar.css";
 
 import Sidebar from "./components/sidebar/Sidebar";
