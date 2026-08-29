@@ -1,4 +1,5 @@
 import { CreditCard, Home, Landmark, ReceiptText } from "lucide-react";
+import BrandLogo from "../brand-logo/BrandLogo";
 
 const navigationItems = [
   {
@@ -29,9 +30,7 @@ export default function Sidebar() {
   return (
     <aside className="bb-sidebar">
       <div className="bb-sidebar__brand">
-        <div className="bb-sidebar__brand-mark" aria-hidden="true">
-          B
-        </div>
+        <BrandLogo />
 
         <div className="bb-sidebar__brand-content">
           <strong className="bb-sidebar__brand-name">ByteBank</strong>
