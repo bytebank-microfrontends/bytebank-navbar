@@ -11,7 +11,11 @@ module.exports = (webpackConfigEnv, argv) => {
   });
 
   if (!webpackConfigEnv.standalone) {
-    defaultConfig.externals.push("react/jsx-runtime", "react/jsx-dev-runtime");
+    defaultConfig.externals.push(
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+      "@bytebank/user-widget"
+    );
   }
 
   return merge(defaultConfig, {

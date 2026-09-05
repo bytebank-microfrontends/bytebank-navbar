@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CreditCard, Home, Landmark, ReceiptText } from "lucide-react";
 import BrandLogo from "../brand-logo/BrandLogo";
+import UserWidgetParcel from "./UserWidgetParcel";
 
 const navigationItems = [
   {
@@ -107,6 +108,10 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      <footer className="bb-sidebar__footer">
+        <UserWidgetParcel />
+      </footer>
     </aside>
   );
 }

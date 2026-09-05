@@ -2,7 +2,11 @@
   position: fixed;
   inset: 0 auto 0 0;
 
+  display: flex;
+  flex-direction: column;
+
   width: 260px;
+  height: 100vh;
   min-height: 100vh;
 
   padding: 24px;
@@ -11,21 +15,21 @@
 
   border-right: 1px solid var(--bb-color-border, #e8e3ec);
 
-  font-family:
-    var(
-      --bb-font-family,
-      "Inter",
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      sans-serif
-    );
+  font-family: var(
+    --bb-font-family,
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
 
   box-sizing: border-box;
 }
 
 .bb-sidebar__brand {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 12px;
 
@@ -81,8 +85,13 @@
 
 .bb-sidebar__nav {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 6px;
+
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 8px;
 }
 
 .bb-sidebar__link {
@@ -105,18 +114,14 @@
   font-size: 14px;
   font-weight: 600;
 
-  transition:
-    background-color 160ms ease,
-    color 160ms ease,
+  transition: background-color 160ms ease, color 160ms ease,
     transform 160ms ease;
 }
 
 .bb-sidebar__link-icon {
   flex-shrink: 0;
 
-  transition:
-    color 160ms ease,
-    transform 160ms ease;
+  transition: color 160ms ease, transform 160ms ease;
 }
 
 .bb-sidebar__link:hover {
@@ -132,8 +137,7 @@
   background: var(--bb-color-sidebar-surface, #241a32);
   color: var(--bb-color-sidebar-text, #f9f7fb);
 
-  box-shadow:
-    inset 3px 0 0 var(--bb-color-primary, #a43df2),
+  box-shadow: inset 3px 0 0 var(--bb-color-primary, #a43df2),
     0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -144,4 +148,26 @@
 .bb-sidebar__link:focus-visible {
   outline: 2px solid var(--bb-color-primary, #a43df2);
   outline-offset: 2px;
+}
+
+.bb-sidebar__footer {
+  flex-shrink: 0;
+
+  margin-top: 24px;
+  padding-top: 18px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bb-sidebar__user-widget,
+.bb-sidebar__user-widget-parcel {
+  width: 100%;
+}
+
+.bb-sidebar__user-widget-fallback {
+  min-height: 48px;
+
+  color: var(--bb-color-sidebar-muted, #b4aabd);
+
+  font-size: 12px;
 }
