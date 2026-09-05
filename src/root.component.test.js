@@ -7,6 +7,7 @@ import {
   loadUserWidgetParcel,
   resolveUserWidgetParcelConfig,
   USER_WIDGET_PARCEL_NAME,
+  userWidgetParcelModuleLoader,
 } from "./parcels/userWidgetParcel";
 
 const mockParcelPropsHistory = [];
@@ -78,7 +79,6 @@ describe("Root component", () => {
   afterEach(() => {
     mockParcelPropsHistory.length = 0;
     jest.restoreAllMocks();
-    delete window.System;
     setPathname("/bytebank-orchestrator/");
   });
 
@@ -195,29 +195,31 @@ describe("Root component", () => {
     expect(getLatestParcelProps()).not.toHaveProperty("customProps");
   });
 
-  it("deve carregar o user widget pelo import map do SystemJS", async () => {
+  it("deve carregar o user widget por dynamic import ESM", async () => {
     const parcelConfig = createParcelConfig();
-    const importMock = jest.fn().mockResolvedValue(parcelConfig);
-
-    window.System = {
-      import: importMock,
-    };
+    const importModuleSpy = jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockResolvedValue(parcelConfig);
 
     await expect(loadUserWidgetParcel()).resolves.toBe(parcelConfig);
-    expect(importMock).toHaveBeenCalledWith(USER_WIDGET_PARCEL_NAME);
+    expect(importModuleSpy).toHaveBeenCalledWith(USER_WIDGET_PARCEL_NAME);
   });
 
-  it("deve normalizar module namespace com default export quando necessario", async () => {
+  it("deve resolver modulo com bootstrap, mount e unmount", async () => {
     const parcelConfig = createParcelConfig();
-    const importMock = jest.fn().mockResolvedValue({
-      default: parcelConfig,
-    });
-
-    window.System = {
-      import: importMock,
-    };
+    jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockResolvedValue(parcelConfig);
 
     await expect(loadUserWidgetParcel()).resolves.toBe(parcelConfig);
+  });
+
+  it("deve aceitar namespace ESM valido com default export", () => {
+    const parcelConfig = createParcelConfig();
+
+    expect(resolveUserWidgetParcelConfig({ default: parcelConfig })).toBe(
+      parcelConfig
+    );
   });
 
   it("deve rejeitar modulos sem lifecycles publicas de Parcel", async () => {
@@ -227,12 +229,20 @@ describe("Root component", () => {
   });
 
   it("deve rejeitar o carregamento quando o import map nao fornecer o user widget", async () => {
+    jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockRejectedValue(new Error(`${USER_WIDGET_PARCEL_NAME} not found`));
+
     await expect(loadUserWidgetParcel()).rejects.toThrow(
       USER_WIDGET_PARCEL_NAME
     );
   });
 
-  it("deve mostrar fallback quando o System.import falhar", async () => {
+  it("deve mostrar fallback quando o modulo carregado for invalido", async () => {
+    jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockResolvedValue({});
+
     render(<Root />);
 
     const error = await getLatestParcelProps()
@@ -263,7 +273,11 @@ describe("Root component", () => {
     expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
   });
 
-  it("deve manter o Navbar funcional sem window.System", async () => {
+  it("deve manter o Navbar funcional se o carregamento do Parcel falhar", async () => {
+    jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockRejectedValue(new Error(`${USER_WIDGET_PARCEL_NAME} not found`));
+
     render(<Root />);
 
     const error = await getLatestParcelProps()
@@ -275,6 +289,16 @@ describe("Root component", () => {
       screen.getByRole("navigation", { name: /navega/i })
     ).toBeInTheDocument();
     expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
+  });
+
+  it("nao trata ausencia de SystemJS como erro do loader", async () => {
+    const parcelConfig = createParcelConfig();
+    delete window.System;
+    jest
+      .spyOn(userWidgetParcelModuleLoader, "importModule")
+      .mockResolvedValue(parcelConfig);
+
+    await expect(loadUserWidgetParcel()).resolves.toBe(parcelConfig);
   });
 
   it("deve manter o callback de Perfil neutro sem navegar para account", () => {

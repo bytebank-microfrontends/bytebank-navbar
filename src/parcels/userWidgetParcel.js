@@ -22,14 +22,13 @@ export const resolveUserWidgetParcelConfig = (moduleNamespace) => {
   return parcelConfig;
 };
 
-export const loadUserWidgetParcel = () => {
-  if (!window.System || typeof window.System.import !== "function") {
-    return Promise.reject(
-      new Error(`${USER_WIDGET_PARCEL_NAME} is not available in the import map`)
-    );
-  }
-
-  return window.System.import(USER_WIDGET_PARCEL_NAME).then(
-    resolveUserWidgetParcelConfig
-  );
+export const userWidgetParcelModuleLoader = {
+  importModule(moduleName) {
+    return import(/* webpackIgnore: true */ moduleName);
+  },
 };
+
+export const loadUserWidgetParcel = () =>
+  userWidgetParcelModuleLoader
+    .importModule(USER_WIDGET_PARCEL_NAME)
+    .then(resolveUserWidgetParcelConfig);
