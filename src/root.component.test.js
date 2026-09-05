@@ -5,6 +5,7 @@ import { getActiveNavItem } from "./components/sidebar/Sidebar";
 import { navbarUser } from "./data/user.mock";
 import {
   loadUserWidgetParcel,
+  resolveUserWidgetParcelConfig,
   USER_WIDGET_PARCEL_NAME,
 } from "./parcels/userWidgetParcel";
 
@@ -54,6 +55,18 @@ const expectActiveHref = (href) => {
 
 const getLatestParcelProps = () =>
   mockParcelPropsHistory[mockParcelPropsHistory.length - 1];
+
+const createParcelConfig = () => ({
+  bootstrap: jest.fn(),
+  mount: jest.fn(),
+  unmount: jest.fn(),
+});
+
+const showParcelFallback = async (error) => {
+  await act(async () => {
+    getLatestParcelProps().handleError(error);
+  });
+};
 
 const renderAtPathname = (pathname) => {
   setPathname(pathname);
@@ -155,12 +168,35 @@ describe("Root component", () => {
     );
   });
 
+  it("deve passar as props do usuario no nivel correto do Parcel", () => {
+    render(<Root />);
+
+    expect(getLatestParcelProps()).toEqual(
+      expect.objectContaining({
+        user: {
+          name: "Felipe Pacheco",
+          initials: "FP",
+          accountType: "Conta Digital",
+        },
+      })
+    );
+    expect(getLatestParcelProps()).not.toHaveProperty("customProps");
+  });
+
+  it("deve passar os callbacks no nivel correto do Parcel", () => {
+    render(<Root />);
+
+    expect(getLatestParcelProps()).toEqual(
+      expect.objectContaining({
+        onProfile: expect.any(Function),
+        onLogout: expect.any(Function),
+      })
+    );
+    expect(getLatestParcelProps()).not.toHaveProperty("customProps");
+  });
+
   it("deve carregar o user widget pelo import map do SystemJS", async () => {
-    const parcelConfig = {
-      bootstrap: jest.fn(),
-      mount: jest.fn(),
-      unmount: jest.fn(),
-    };
+    const parcelConfig = createParcelConfig();
     const importMock = jest.fn().mockResolvedValue(parcelConfig);
 
     window.System = {
@@ -171,10 +207,74 @@ describe("Root component", () => {
     expect(importMock).toHaveBeenCalledWith(USER_WIDGET_PARCEL_NAME);
   });
 
+  it("deve normalizar module namespace com default export quando necessario", async () => {
+    const parcelConfig = createParcelConfig();
+    const importMock = jest.fn().mockResolvedValue({
+      default: parcelConfig,
+    });
+
+    window.System = {
+      import: importMock,
+    };
+
+    await expect(loadUserWidgetParcel()).resolves.toBe(parcelConfig);
+  });
+
+  it("deve rejeitar modulos sem lifecycles publicas de Parcel", async () => {
+    expect(() => resolveUserWidgetParcelConfig({ default: {} })).toThrow(
+      "bootstrap, mount and unmount"
+    );
+  });
+
   it("deve rejeitar o carregamento quando o import map nao fornecer o user widget", async () => {
     await expect(loadUserWidgetParcel()).rejects.toThrow(
       USER_WIDGET_PARCEL_NAME
     );
+  });
+
+  it("deve mostrar fallback quando o System.import falhar", async () => {
+    render(<Root />);
+
+    const error = await getLatestParcelProps()
+      .config()
+      .catch((reason) => reason);
+    await showParcelFallback(error);
+
+    expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
+  });
+
+  it("deve mostrar fallback quando o mount do Parcel falhar", async () => {
+    render(<Root />);
+
+    await showParcelFallback(new Error("mount failed"));
+
+    expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
+  });
+
+  it("deve manter o Navbar funcional quando o Parcel falhar", async () => {
+    renderAtPathname("/bytebank-orchestrator/account");
+
+    await showParcelFallback(new Error("mount failed"));
+
+    expectActiveHref("/bytebank-orchestrator/account");
+    expect(
+      getNavLinkByHref("/bytebank-orchestrator/transaction")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
+  });
+
+  it("deve manter o Navbar funcional sem window.System", async () => {
+    render(<Root />);
+
+    const error = await getLatestParcelProps()
+      .config()
+      .catch((reason) => reason);
+    await showParcelFallback(error);
+
+    expect(
+      screen.getByRole("navigation", { name: /navega/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Usuário indisponível")).toBeInTheDocument();
   });
 
   it("deve manter o callback de Perfil neutro sem navegar para account", () => {

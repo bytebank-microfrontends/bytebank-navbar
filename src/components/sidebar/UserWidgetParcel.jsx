@@ -17,7 +17,7 @@ export default function UserWidgetParcel() {
   if (isUnavailable) {
     return (
       <div className="bb-sidebar__user-widget-fallback" aria-live="polite">
-        Usuario indisponivel
+        Usuário indisponível
       </div>
     );
   }
