@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { CreditCard, Home, Landmark, ReceiptText } from "lucide-react";
 import BrandLogo from "../brand-logo/BrandLogo";
 
@@ -24,8 +25,49 @@ const navigationItems = [
   },
 ];
 
+const normalizePathname = (pathname) => {
+  const pathnameWithoutTrailingSlash = pathname.replace(/\/+$/, "");
+
+  return pathnameWithoutTrailingSlash === "/bytebank-orchestrator"
+    ? "/bytebank-orchestrator/"
+    : pathnameWithoutTrailingSlash;
+};
+
+export const getActiveNavItem = (pathname) => {
+  const normalizedPathname = normalizePathname(pathname);
+
+  return (
+    navigationItems.find(
+      (item) => normalizePathname(item.href) === normalizedPathname
+    ) ?? null
+  );
+};
+
+const getCurrentActiveHref = () =>
+  getActiveNavItem(window.location.pathname)?.href ?? null;
+
 export default function Sidebar() {
-  const currentPath = window.location.pathname;
+  const [activeHref, setActiveHref] = useState(getCurrentActiveHref);
+
+  useEffect(() => {
+    const syncActiveItemWithRoute = () => {
+      setActiveHref(getCurrentActiveHref());
+    };
+
+    window.addEventListener(
+      "single-spa:routing-event",
+      syncActiveItemWithRoute
+    );
+    window.addEventListener("popstate", syncActiveItemWithRoute);
+
+    return () => {
+      window.removeEventListener(
+        "single-spa:routing-event",
+        syncActiveItemWithRoute
+      );
+      window.removeEventListener("popstate", syncActiveItemWithRoute);
+    };
+  }, []);
 
   return (
     <aside className="bb-sidebar">
@@ -42,7 +84,7 @@ export default function Sidebar() {
       <nav className="bb-sidebar__nav" aria-label="Navegação principal">
         {navigationItems.map((item) => {
           const Icon = item.icon;
-          const isActive = currentPath === item.href;
+          const isActive = activeHref === item.href;
 
           return (
             <a
